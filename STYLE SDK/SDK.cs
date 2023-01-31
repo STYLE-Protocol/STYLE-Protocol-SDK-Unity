@@ -10,19 +10,26 @@ using UnityEngine.UI;
 using UnityEngine.Accessibility;
 using UnityEngine.Networking;
 
-//Used by metadata class for storing attributes
 public class Payment
 {
     public string stringValue;
     public BigInteger value;
 }
 
-//Used for storing NFT metadata from standard NFT json files
 public class PaymentToken
 {
     public string address;
     public string name;
     public string symbol;
+}
+
+public class Asset
+{
+    public string name;
+    public string description;
+    public string image;
+    public string animation_url;
+    public string extraData;
 }
 
 public class SDK
@@ -165,7 +172,17 @@ public class SDK
                     {
                         await webRequestNew.SendWebRequest();
 
-                        data["asset"] = JObject.Parse(webRequestNew.downloadHandler.text);
+                        JObject assetTmp = JObject.Parse(webRequestNew.downloadHandler.text);
+
+                        Asset asset = new Asset();
+                        asset.name = assetTmp["name"].ToString();
+                        asset.description = assetTmp["description"].ToString();
+                        asset.image = assetTmp["image"].ToString();
+                        asset.animation_url = assetTmp["animation_url"].ToString();
+                        if (assetTmp["extraData"] != null) {
+                            asset.extraData = assetTmp["extraData"].ToString();
+                        }
+                        data["asset"] = asset;
                     };
                     
 
@@ -242,6 +259,16 @@ public class SDK
                 paymentToken.symbol = (string)cur["paymentToken"]["symbol"];
                 paymentToken.address = (string)cur["paymentToken"]["address"];
                 data["paymentToken"] = paymentToken;
+
+                Asset asset = new Asset();
+                asset.name = (string)cur["asset"]["name"];
+                asset.description = (string)cur["asset"]["description"];
+                asset.image = (string)cur["asset"]["image"];
+                asset.animation_url = (string)cur["asset"]["animation_url"];
+                if (cur["asset"]["extraData"] != null) {
+                    asset.extraData = cur["asset"]["extraData"].ToString();
+                }
+                data["asset"] = asset;
 
                 allDataParsed.Add(data);
             }

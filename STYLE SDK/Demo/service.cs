@@ -13,7 +13,7 @@ using UnityEngine.Networking;
 //Interacting with blockchain
 public class service : MonoBehaviour
 {
-    public Card cardTmp;
+    public Item item;
 
     async private void  Start()
     {
@@ -29,12 +29,9 @@ public class service : MonoBehaviour
         {
             Dictionary<string, object> data = requestedNFTs[i];
 
-            Card _card = Instantiate(cardTmp, transform);
-            _card.Initialize(String.Format("{0}", i), JsonConvert.SerializeObject(data), data);
-            //_card.scale = new Vector3(1, 1, 1);
+            Item _item = Instantiate(item, transform);
+            _item.Initialize(String.Format("{0}", i), JsonConvert.SerializeObject(data), data);
+            //_item.scale = new Vector3(1, 1, 1);
         }
-
-        Destroy(cardTmp.gameObject);
-
     }
 }
