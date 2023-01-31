@@ -16,12 +16,13 @@ public class Item : MonoBehaviour
     public TMPro.TMP_Text ename;
     public Image eimage;
     public Button buyBtn;
+    public Loader loader;
 
     async private void OnClick(Dictionary<string, object> data)
     {
+        loader.Show();
         string wallet = PlayerPrefs.GetString("Account");
         string resp = await SDK.approveERC20(wallet, data);
-        print(resp);
         if (string.Equals(resp, "true"))
         {
             print("approved");
@@ -38,14 +39,18 @@ public class Item : MonoBehaviour
         {
             print("not approved");
         }
+        loader.Unshow();
     }
 
-    private void init(string name, string desc, Dictionary<string, object> data)
+    private void init(Dictionary<string, object> data)
     {
         buyBtn.onClick.AddListener(() => OnClick(data));
-        ename.text = name;
 
         Asset asset = (Asset)data["asset"];
+
+        ename.text = asset.name;
+
+        
         string animation_url = asset.animation_url;
         if (String.Equals(animation_url.Substring(0, 4), "ipfs"))
         {
@@ -79,7 +84,7 @@ public class Item : MonoBehaviour
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(image);
         yield return request.SendWebRequest();
-        if(request.isNetworkError || request.isHttpError) 
+        if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) 
             Debug.Log(request.error);
         else{
             Texture2D tex = ((DownloadHandlerTexture) request.downloadHandler).texture;
@@ -89,13 +94,13 @@ public class Item : MonoBehaviour
     }
 
     
-    public Item(string name, string desc, Dictionary<string, object> data)
+    public Item(Dictionary<string, object> data)
     {
-        init(name, desc, data);
+        init(data);
     }
 
-    public void Initialize(string name, string desc, Dictionary<string, object> data)
+    public void Initialize(Dictionary<string, object> data)
     {
-        init(name, desc, data);
+        init(data);
     }
 }
