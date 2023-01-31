@@ -15,8 +15,13 @@ public class Item : MonoBehaviour
 {
     public TMPro.TMP_Text ename;
     public Image eimage;
+    public GLTFast.GltfAsset emodel;
     public Button buyBtn;
     public Loader loader;
+
+    private int imgSize = 280;
+
+    private string animationUrl;
 
     async private void OnClick(Dictionary<string, object> data)
     {
@@ -64,6 +69,8 @@ public class Item : MonoBehaviour
         }
         print(image);
 
+        animationUrl = animation_url;
+
         StartCoroutine(LoadImage(image));
         /*
         var gltf = new GLTFast.GltfImport();
@@ -102,5 +109,21 @@ public class Item : MonoBehaviour
     public void Initialize(Dictionary<string, object> data)
     {
         init(data);
+    }
+
+    public void OnMouseOver()
+    {
+        eimage.transform.localScale = new UnityEngine.Vector3(0, 0, 0);
+        emodel.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
+
+        emodel.Url = animationUrl;
+    }
+
+    public void OnMouseExit()
+    {
+        eimage.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
+        emodel.transform.localScale = new UnityEngine.Vector3(0, 0, 0);
+
+        emodel.Url = "";
     }
 }
