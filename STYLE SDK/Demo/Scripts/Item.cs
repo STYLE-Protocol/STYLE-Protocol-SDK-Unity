@@ -17,9 +17,8 @@ public class Item : MonoBehaviour
     public Image eimage;
     public GLTFast.GltfAsset emodel;
     public Button buyBtn;
-    public Loader loader;
 
-    private int imgSize = 280;
+    private Loader loader;
 
     private string animationUrl;
 
@@ -47,8 +46,10 @@ public class Item : MonoBehaviour
         loader.Unshow();
     }
 
-    private void init(Dictionary<string, object> data)
+    private void init(Dictionary<string, object> data, Loader _loader)
     {
+        loader = _loader;
+
         buyBtn.onClick.AddListener(() => OnClick(data));
 
         Asset asset = (Asset)data["asset"];
@@ -101,14 +102,14 @@ public class Item : MonoBehaviour
     }
 
     
-    public Item(Dictionary<string, object> data)
+    public Item(Dictionary<string, object> data, Loader _loader)
     {
-        init(data);
+        init(data, _loader);
     }
 
-    public void Initialize(Dictionary<string, object> data)
+    public void Initialize(Dictionary<string, object> data, Loader _loader)
     {
-        init(data);
+        init(data, _loader);
     }
 
     public void OnMouseOver()

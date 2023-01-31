@@ -31,7 +31,7 @@ public class service : MonoBehaviour
             Dictionary<string, object> data = requestedNFTs[i];
 
             Item _item = Instantiate(item, transform);
-            _item.Initialize(data);
+            _item.Initialize(data, loader);
             //_item.scale = new Vector3(1, 1, 1);
         }
 
