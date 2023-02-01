@@ -31,7 +31,6 @@ public class Item : MonoBehaviour
         {
             print("approved");
             resp = await SDK.buyAndMintItem(wallet, data);
-            print(resp);
             if (string.Equals(resp, "true"))
             {
                 print("bought");
@@ -56,35 +55,35 @@ public class Item : MonoBehaviour
 
         ename.text = asset.name;
 
-        
         string animation_url = asset.animation_url;
         if (String.Equals(animation_url.Substring(0, 4), "ipfs"))
         {
             animation_url = String.Format("https://{0}/ipfs/{1}", Constants.GATEWAY, animation_url.Substring(7));
         }
-        print(animation_url);
         string image = asset.image;
         if (String.Equals(image.Substring(0, 4), "ipfs"))
         {
             image = String.Format("https://{0}/ipfs/{1}", Constants.GATEWAY, image.Substring(7));
         }
-        print(image);
 
         animationUrl = animation_url;
 
         StartCoroutine(LoadImage(image));
-        /*
-        var gltf = new GLTFast.GltfImport();
 
-        gltf.Load(animation_url).ContinueWith((task) => {
-            if (task.Result) {
-                var obj = gameObject.GetComponent("Model") as GLTFast.GltfAsset;
-                gltf.InstantiateMainSceneAsync(obj.gameObject.transform);
-            }
-            else {
-                Debug.LogError("Loading glTF failed!");
-            }
-        });
+        /*   
+        EventTrigger trigger = eimage.GetComponent<EventTrigger>( );
+		EventTrigger.Entry entry = new EventTrigger.Entry( );
+		entry.eventID = EventTriggerType.PointerClick;
+		entry.callback.AddListener( (_) => OnPointerEnter() );
+		trigger.triggers.Add( entry );
+        //EventTrigger.Entry entry2 = new EventTrigger.Entry( );
+		//entry2.eventID = EventTriggerType.PointerExit;
+		//entry2.callback.AddListener( (_) => OnPointerExit() );
+		//trigger.triggers.Add( entry2 );
+
+        //EventTrigger obj = gameObject.GetComponent<EventTrigger>();
+        //obj.onPointerEnter.AddListener(() => OnPointerEnter(data));
+        //obj.onPointerExit.AddListener(() => OnPointerExit(data));
         */
     }
 
@@ -112,19 +111,31 @@ public class Item : MonoBehaviour
         init(data, _loader);
     }
 
-    public void OnMouseOver()
+    
+    public async void OnPointerEnter()
     {
         eimage.transform.localScale = new UnityEngine.Vector3(0, 0, 0);
-        emodel.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
+        //emodel.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
+        
+        var gltf = new GLTFast.GltfImport();
+        var success = await gltf.Load(animationUrl);
 
-        emodel.Url = animationUrl;
+        if (success) {
+            var gameObject = new GameObject("glTF");
+            await gltf.InstantiateMainSceneAsync(gameObject.transform);
+        }
+        else {
+            Debug.LogError("Loading glTF failed!");
+        }
+            
     }
 
-    public void OnMouseExit()
+    public void OnPointerExit()
     {
         eimage.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
         emodel.transform.localScale = new UnityEngine.Vector3(0, 0, 0);
 
         emodel.Url = "";
     }
+    
 }
