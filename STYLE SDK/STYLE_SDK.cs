@@ -372,6 +372,9 @@ public class STYLE_SDK
     }
 
     async public static Task<List<Dictionary<string, object>>> getOwnedDerivatives(
+        List<string> metaverseFilter,
+        List<string> typeFilter,
+        List<string> subtypeFilter,
         Dictionary<string, string> userProof,
         int chainId = 5
     )
@@ -383,6 +386,16 @@ public class STYLE_SDK
                 Secrets.ALCHEMY_KEY,
                 JsonConvert.SerializeObject(userProof)
             );
+            if (metaverseFilter.Count != 0) {
+                url = String.Format("{0}&metaverseFilter={1}", url, JsonConvert.SerializeObject(metaverseFilter));
+            }
+            if (typeFilter.Count != 0) {
+                url = String.Format("{0}&typeFilter={1}", url, JsonConvert.SerializeObject(typeFilter));
+            }
+            if (subtypeFilter.Count != 0) {
+                url = String.Format("{0}&subtypeFilter={1}", url, JsonConvert.SerializeObject(subtypeFilter));
+            }
+
 
             JArray requestedNFTs;
             using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
