@@ -20,7 +20,9 @@ public class serviceProfile : MonoBehaviour
         Dictionary<string, string> userProof = await STYLE_SDK.getUserProof();
         
         List<string> metaverseFilter = new List<string>();
-        List<Dictionary<string, object>> ownedDerivatives = await STYLE_SDK.getOwnedDerivatives(metaverseFilter, new List<string>(), new List<string>(), userProof);
+        List<string> typeFilter = new List<string>();
+        List<string> subtypeFilter = new List<string>();
+        List<Dictionary<string, object>> ownedDerivatives = await STYLE_SDK.getOwnedDerivatives(metaverseFilter, typeFilter, subtypeFilter, userProof);
 
         Debug.Log(JsonConvert.SerializeObject(ownedDerivatives));
         for (int i = 0; i < ownedDerivatives.Count; i++)

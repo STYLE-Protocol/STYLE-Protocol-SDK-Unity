@@ -3,10 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using UnityEngine.EventSystems;
 using System.Collections;
-using UnityEngine.Assertions;
-using System.Threading.Tasks;
 
 public class Item : MonoBehaviour
 {

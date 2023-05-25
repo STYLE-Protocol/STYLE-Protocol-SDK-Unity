@@ -17,7 +17,10 @@ public class service : MonoBehaviour
 
         print(JsonConvert.SerializeObject(await STYLE_SDK.getContractsData()));
 
-        List<Dictionary<string, object>> requestedNFTs = await STYLE_SDK.getRequestedNFTs(new List<string>(), new List<string>(), new List<string>());
+        List<string> metaverseFilter = new List<string>();
+        List<string> typeFilter = new List<string>();
+        List<string> subtypeFilter = new List<string>();
+        List<Dictionary<string, object>> requestedNFTs = await STYLE_SDK.getRequestedNFTs(metaverseFilter, typeFilter, subtypeFilter);
 
         for (int i = 0; i < requestedNFTs.Count; i++)
         {

@@ -114,4 +114,12 @@ public static class Constants
             return "style-protocol-api.vercel.app";
         }
     }
+
+    public static string CHOSEN_NFT
+    {
+        get
+        {
+            return "STYLE_SDK_CHOSEN_NFT";
+        }
+    }
 }

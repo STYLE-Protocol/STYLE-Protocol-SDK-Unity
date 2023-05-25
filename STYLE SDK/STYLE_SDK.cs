@@ -49,6 +49,12 @@ public class ContractsData
     public string gateway;
 }
 
+public class UserProof
+{
+    public string walletAddress;
+    public string signature;
+}
+
 public class STYLE_SDK
 {    
     async public static Task<List<Dictionary<string, object>>> getRequestedNFTs(
@@ -340,28 +346,37 @@ public class STYLE_SDK
     {
         try
         {
-            string walletAddress = PlayerPrefs.GetString("Account");
-            var provider = RPC.GetInstance.Provider();
-
-            string storageMessage = (string)(await getContractsData()).storageMessage;
+            string userProofStr = PlayerPrefs.GetString("STYLE_SDK_PROOF");
 
             Dictionary<string, string> userProof = new Dictionary<string, string>();
-            userProof.Add("walletAddress", walletAddress);
+            if (userProofStr == "") {
+                string walletAddress = PlayerPrefs.GetString("Account");
+    
+                string storageMessage = (string)(await getContractsData()).storageMessage;
 
-            #if UNITY_WEBGL
+                
+                userProof.Add("walletAddress", walletAddress);
 
-            string signHashed = await Web3GL.Sign(storageMessage);
+                #if UNITY_WEBGL
 
-            userProof.Add("signature", signHashed);
+                string signHashed = await Web3GL.Sign(storageMessage);
 
-            #else
+                userProof.Add("signature", signHashed);
 
-            string signature = await Web3Wallet.Sign(storageMessage);
-            
-            userProof.Add("signature", signature);
+                #else
 
-            #endif
-            
+                string signature = await Web3Wallet.Sign(storageMessage);
+                
+                userProof.Add("signature", signature);
+
+                #endif
+                
+                PlayerPrefs.SetString("STYLE_SDK_PROOF", JsonConvert.SerializeObject(userProof));
+                PlayerPrefs.Save();
+            } else {
+                userProof = JsonConvert.DeserializeObject<Dictionary<string, string>>(userProofStr);
+            }
+
             return userProof;
         }
         catch (Exception e)

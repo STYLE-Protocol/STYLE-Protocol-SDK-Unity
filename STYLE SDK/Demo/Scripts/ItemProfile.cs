@@ -3,26 +3,39 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using UnityEngine.EventSystems;
 using System.Collections;
-using UnityEngine.Assertions;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 public class ItemProfile : MonoBehaviour
 {
     public TMPro.TMP_Text ename;
     public Image eimage;
+    public Button chooseBtn;
+    public TMPro.TMP_Text btnText;
     private GameObject scroll;
     private Loader loader;
     private Camera cameraMain;
 
     private string animationUrl;
+    
+    private Dictionary<string, object> dataFull;
+
+    private void OnClick(Dictionary<string, object> data)
+    {
+        string newData = JsonConvert.SerializeObject(data);
+        PlayerPrefs.SetString(Constants.CHOSEN_NFT, newData);
+        PlayerPrefs.Save();
+    }
 
     private void init(Dictionary<string, object> data, Loader _loader, GameObject _scroll, Camera _cameraMain)
     {
         loader = _loader;
         scroll = _scroll;
         cameraMain = _cameraMain;
+
+        dataFull = data;
+
+        chooseBtn.onClick.AddListener(() => OnClick(data));
 
         Asset asset = (Asset)data["asset"];
 
@@ -60,5 +73,17 @@ public class ItemProfile : MonoBehaviour
     public void Initialize(Dictionary<string, object> data, Loader _loader, GameObject _scroll, Camera _cameraMain)
     {
         init(data, _loader, _scroll, _cameraMain);
+    }
+
+    private void Update() {
+        string curData = PlayerPrefs.GetString(Constants.CHOSEN_NFT);
+
+        string newData = JsonConvert.SerializeObject(dataFull);
+
+        if (curData.Equals(newData)) {
+            btnText.text = "Chosen";
+        } else {
+            btnText.text = "Choose";
+        }
     }
 }
